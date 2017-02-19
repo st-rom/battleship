@@ -140,28 +140,28 @@ def is_valid(mapa):
     for i in range(len(mapa)):
         for j in range(len(mapa)):
             if mapa[i][0][j] == '*' or mapa[i][0][j] == 'X':
-                mapa[i][0] = mapa[i][0][:j] + '0' + mapa[i][0][(j + 1):]
+                mapa[i][0] = mapa[i][0][:j] + '#' + mapa[i][0][(j + 1):]
                 counter += 1
                 a = b = c = d = size = 1
                 while True:
                     try:
-                        if mapa[i - a][0][j] == '*' or mapa[i - a][0][j] == 'X':
-                            mapa[i - a][0] = mapa[i - a][0][:j] + '0' + mapa[i - a][0][(j + 1):]
+                        if (mapa[i - a][0][j] == '*' or mapa[i - a][0][j] == 'X') and (i - a != -1):
+                            mapa[i - a][0] = mapa[i - a][0][:j] + '#' + mapa[i - a][0][(j + 1):]
                             counter += 1
                             a += 1
                             size += 1
                         elif mapa[i + b][0][j] == '*' or mapa[i + b][0][j] == 'X':
-                            mapa[i + b][0] = mapa[i + b][0][:j] + '0' + mapa[i + b][0][(j + 1):]
+                            mapa[i + b][0] = mapa[i + b][0][:j] + '#' + mapa[i + b][0][(j + 1):]
                             counter += 1
                             b += 1
                             size += 1
-                        elif mapa[i][0][j - c] == '*' or mapa[i][0][j - c] == 'X':
-                            mapa[i][0] = mapa[i][0][:(j - c)] + '0' + mapa[i][0][(j - c + 1):]
+                        elif (mapa[i][0][j - c] == '*' or mapa[i][0][j - c] == 'X') and (j - c != -1):
+                            mapa[i][0] = mapa[i][0][:(j - c)] + '#' + mapa[i][0][(j - c + 1):]
                             counter += 1
                             c += 1
                             size += 1
                         elif mapa[i][0][j + d] == '*' or mapa[i][0][j + d] == 'X':
-                            mapa[i][0] = mapa[i][0][:(j + d)] + '0' + mapa[i][0][(j + d + 1):]
+                            mapa[i][0] = mapa[i][0][:(j + d)] + '#' + mapa[i][0][(j + d + 1):]
                             counter += 1
                             d += 1
                             size += 1
@@ -177,21 +177,16 @@ def is_valid(mapa):
                                 jour[jj] += 1
                                 break
                         break
-    if jour['1-sized'] == 4 and jour['2-sized'] == 3 and \
-                    jour['3-sized'] == 2 and jour['4-sized'] == 1 and counter == 20:
+                        # print(counter, jour)
+    # if jour ['1-sized'] == 4 and jour['2-sized'] == 3 and\
+    # jour['3-sized'] == 2 and jour['4-sized'] == 1 and counter == 20:
+    if counter == 20:
         return True
     else:
         return False
 
 
 def generate_field():
-    '''
-    () -> (data)
-    >>> generate_field()
-    [['  ***     '], ['**  **  **'], ['  **** ***'], ['     *    '],
-    ['   *      '], ['         *'], ['          '], ['          '],
-    ['         *'], ['          ']]
-    '''
     mapa = [[' ' * 10], [' ' * 10], [' ' * 10], [' ' * 10], [' ' * 10], [' ' * 10], [' ' * 10], [' ' * 10], [' ' * 10],
             [' ' * 10]]
     a = 'nope'
@@ -201,48 +196,39 @@ def generate_field():
         x = random.randrange(10)
         y = random.randrange(10)
         times = 4
-        #        print(x, y)
         while times != 0:
-            #            print(times)
             if ran == 0:
                 if x < 7:
                     if mapa[y][0][x + 1] == ' ' and mapa[y][0][x + 2] == ' ' and mapa[y][0][x + 3] == ' ':
+                        ships = [(y, x), (y, x + 1), (y, x + 2), (y, x + 3)]
+                        mapa = zanulka(mapa, ships)
                         mapa[y][0] = mapa[y][0][:(x + 1)] + '***' + mapa[y][0][(x + 4):]
                         a = 'Done'
                         mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                        ships.append([(y, x), (y, x + 1), (y, x + 2), (y, x + 3)])
-                        #    if y - 1 != -1:
-                        #        mapa[y - 1][0] = mapa[y - 1][0][:(x)] + '0000' + mapa[y - 1][0][(x + 5):]
-                        #    if y + 1 != -1:
-                        #        mapa[y + 1][0] = mapa[y + 1][0][:(x - 1)] + '000000' + mapa[y + 1][0][(x + 5):]
-
-
                         break
                 else:
-                    #                    print('e')
                     break
             elif ran == 1:
                 if x > 2:
                     if mapa[y][0][x - 1] == ' ' and mapa[y][0][x - 2] == ' ' and mapa[y][0][x - 3] == ' ':
+                        ships = [(y, x), (y, x - 1), (y, x - 2), (y, x - 3)]
+                        mapa = zanulka(mapa, ships)
                         mapa[y][0] = mapa[y][0][:(x - 3)] + '***' + mapa[y][0][(x):]
                         a = 'Done'
                         mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                        ships.append([(y, x), (y, x - 1), (y, x - 2), (y, x - 3)])
-                        #                        print('b', x, y)
                         break
                 else:
-                    #                    print('e')
                     break
             elif ran == 2:
                 if y > 2:
                     if mapa[y - 1][0][x] == ' ' and mapa[y - 2][0][x] == ' ' and mapa[y - 3][0][x] == ' ':
+                        ships = [(y, x), (y - 1, x), (y - 2, x), (y - 3, x)]
+                        mapa = zanulka(mapa, ships)
                         mapa[y - 1][0] = mapa[y - 1][0][:(x)] + '*' + mapa[y - 1][0][(x + 1):]
                         mapa[y - 2][0] = mapa[y - 2][0][:(x)] + '*' + mapa[y - 2][0][(x + 1):]
                         mapa[y - 3][0] = mapa[y - 3][0][:(x)] + '*' + mapa[y - 3][0][(x + 1):]
                         a = 'Done'
                         mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                        ships.extend([(y, x), (y - 1, x), (y - 2, x), (y - 3, x)])
-                        #                        print('c', x, y)
                         break
                 else:
                     #                    print('e')
@@ -250,13 +236,13 @@ def generate_field():
             elif ran == 3:
                 if y < 7:
                     if mapa[y + 1][0][x] == ' ' and mapa[y + 2][0][x] == ' ' and mapa[y + 3][0][x] == ' ':
+                        ships = [(y, x), (y + 1, x), (y + 2, x), (y + 3, x)]
+                        mapa = zanulka(mapa, ships)
                         mapa[y + 1][0] = mapa[y + 1][0][:(x)] + '*' + mapa[y + 1][0][(x + 1):]
                         mapa[y + 2][0] = mapa[y + 2][0][:(x)] + '*' + mapa[y + 2][0][(x + 1):]
                         mapa[y + 3][0] = mapa[y + 3][0][:(x)] + '*' + mapa[y + 3][0][(x + 1):]
                         a = 'Done'
                         mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                        ships.append([(y, x), (y + 1, x), (y + 2, x), (y + 3, x)])
-                        #                        print('d', x, y)
                         break
                 else:
                     #                    print('e')
@@ -265,142 +251,239 @@ def generate_field():
             times -= 1
             if ran == 4:
                 ran = 0
-        for i in range(2):
-            a = 'nope'
-            while a != 'Done':
-                ran = random.randrange(4)
-                x = random.randrange(10)
-                y = random.randrange(10)
-                times = 4
-                #               print(x, y)
-                while times != 0:
-                    #                   print(times)
-                    if ran == 0:
-                        if x < 8:
-                            if mapa[y][0][x + 1] == ' ' and mapa[y][0][x + 2] == ' ' and mapa[y][0][x] == ' ':
-                                mapa[y][0] = mapa[y][0][:(x + 1)] + '**' + mapa[y][0][(x + 3):]
-                                a = 'Done'
-                                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                                ships.append([(y, x), (y, x + 1), (y, x + 2)])
-                                #                                print('a', x, y)
-                                break
-                        else:
-                            #                            print('e')
+    for i in range(2):
+        a = 'nope'
+        while a != 'Done':
+            ran = random.randrange(4)
+            x = random.randrange(10)
+            y = random.randrange(10)
+            times = 4
+            #           print(x, y)
+            while times != 0:
+                #               print(times)
+                if ran == 0:
+                    if x < 8:
+                        if mapa[y][0][x + 1] == ' ' and mapa[y][0][x + 2] == ' ' and mapa[y][0][x] == ' ':
+                            ships = [(y, x), (y, x + 1), (y, x + 2)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y][0] = mapa[y][0][:(x + 1)] + '**' + mapa[y][0][(x + 3):]
+                            a = 'Done'
+                            mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
                             break
-                    elif ran == 1:
-                        if x > 1:
-                            if mapa[y][0][x - 1] == ' ' and mapa[y][0][x - 2] == ' ' and mapa[y][0][x] == ' ':
-                                mapa[y][0] = mapa[y][0][:(x - 2)] + '**' + mapa[y][0][(x):]
-                                a = 'Done'
-                                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                                ships.append([(y, x), (y, x - 1), (y, x - 2)])
-                                #                                print('b', x, y)
-                                break
-                        else:
-                            #                            print('e')
+                    else:
+                        #                        print('e')
+                        break
+                elif ran == 1:
+                    if x > 1:
+                        if mapa[y][0][x - 1] == ' ' and mapa[y][0][x - 2] == ' ' and mapa[y][0][x] == ' ':
+                            ships = [(y, x), (y, x - 1), (y, x - 2)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y][0] = mapa[y][0][:(x - 2)] + '**' + mapa[y][0][(x):]
+                            a = 'Done'
+                            mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
                             break
-                    elif ran == 2:
-                        if y > 1:
-                            if mapa[y - 1][0][x] == ' ' and mapa[y - 2][0][x] == ' ' and mapa[y][0][x] == ' ':
-                                mapa[y - 1][0] = mapa[y - 1][0][:(x)] + '*' + mapa[y - 1][0][(x + 1):]
-                                mapa[y - 2][0] = mapa[y - 2][0][:(x)] + '*' + mapa[y - 2][0][(x + 1):]
-                                a = 'Done'
-                                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                                #                                print('c', x, y)
-                                break
-                        else:
-                            #                            print('e')
+                    else:
+                        #                        print('e')
+                        break
+                elif ran == 2:
+                    if y > 1:
+                        if mapa[y - 1][0][x] == ' ' and mapa[y - 2][0][x] == ' ' and mapa[y][0][x] == ' ':
+                            ships = [(y, x), (y - 1, x), (y - 2, x)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y - 1][0] = mapa[y - 1][0][:(x)] + '*' + mapa[y - 1][0][(x + 1):]
+                            mapa[y - 2][0] = mapa[y - 2][0][:(x)] + '*' + mapa[y - 2][0][(x + 1):]
+                            a = 'Done'
+                            mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
                             break
-                    elif ran == 3:
-                        if y < 8:
-                            if mapa[y + 1][0][x] == ' ' and mapa[y + 2][0][x] == ' ' and mapa[y][0][x] == ' ':
-                                mapa[y + 1][0] = mapa[y + 1][0][:(x)] + '*' + mapa[y + 1][0][(x + 1):]
-                                mapa[y + 2][0] = mapa[y + 2][0][:(x)] + '*' + mapa[y + 2][0][(x + 1):]
-                                a = 'Done'
-                                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                                #                                print('d', x, y)
-                                break
-                        else:
-                            #                            print('e')
+                    else:
+                        #                        print('e')
+                        break
+                elif ran == 3:
+                    if y < 8:
+                        if mapa[y + 1][0][x] == ' ' and mapa[y + 2][0][x] == ' ' and mapa[y][0][x] == ' ':
+                            ships = [(y, x), (y + 1, x), (y + 2, x)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y + 1][0] = mapa[y + 1][0][:(x)] + '*' + mapa[y + 1][0][(x + 1):]
+                            mapa[y + 2][0] = mapa[y + 2][0][:(x)] + '*' + mapa[y + 2][0][(x + 1):]
+                            a = 'Done'
+                            mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
                             break
-                    ran += 1
-                    times -= 1
-                    if ran == 4:
-                        ran = 0
-                        #
-        for i in range(3):
-            a = 'nope'
-            while a != 'Done':
-                ran = random.randrange(4)
-                x = random.randrange(10)
-                y = random.randrange(10)
-                times = 4
-                #                print(x, y)
-                while times != 0:
-                    #                    print(times)
-                    if ran == 0:
-                        if x < 9:
-                            if mapa[y][0][x + 1] == ' ' and mapa[y][0][x] == ' ':
-                                mapa[y][0] = mapa[y][0][:(x + 1)] + '*' + mapa[y][0][(x + 2):]
-                                a = 'Done'
-                                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                                #                                print('a', x, y)
-                                ships.append([(y, x), (y, x + 1)])
-                                break
-                        else:
-                            #                            print('e')
+                    else:
+                        #                        print('e')
+                        break
+                ran += 1
+                times -= 1
+                if ran == 4:
+                    ran = 0
+                    #
+    for i in range(3):
+        a = 'nope'
+        while a != 'Done':
+            ran = random.randrange(4)
+            x = random.randrange(10)
+            y = random.randrange(10)
+            times = 4
+            #            print(x, y)
+            while times != 0:
+                #                print(times)
+                if ran == 0:
+                    if x < 9:
+                        if mapa[y][0][x + 1] == ' ' and mapa[y][0][x] == ' ':
+                            ships = [(y, x), (y, x + 1)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y][0] = mapa[y][0][:(x + 1)] + '*' + mapa[y][0][(x + 2):]
+                            a = 'Done'
+                            mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
                             break
-                    elif ran == 1:
-                        if x > 0:
-                            if mapa[y][0][x] == ' ' and mapa[y][0][x - 1] == ' ':
-                                mapa[y][0] = mapa[y][0][:(x - 1)] + '**' + mapa[y][0][(x + 1):]
-                                a = 'Done'
-                                ships.append([(y, x), (y, x - 1)])
-                                #                                print('b', x, y)
-                                break
-                        else:
-                            #                            print('e')
+                    else:
+                        #                        print('e')
+                        break
+                elif ran == 1:
+                    if x > 0:
+                        if mapa[y][0][x] == ' ' and mapa[y][0][x - 1] == ' ':
+                            ships = [(y, x), (y, x - 1)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y][0] = mapa[y][0][:(x - 1)] + '**' + mapa[y][0][(x + 1):]
+                            a = 'Done'
                             break
-                    elif ran == 2:
-                        if y > 0:
-                            if mapa[y - 1][0][x] == ' ' and mapa[y][0][x] == ' ':
-                                mapa[y - 1][0] = mapa[y - 1][0][:(x)] + '*' + mapa[y - 1][0][(x + 1):]
-                                a = 'Done'
-                                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                                #                                print('c', x, y)
-                                ships.append([(y - 1, x), (y, x)])
-                                break
-                        else:
-                            #                            print('e')
+                    else:
+                        #                        print('e')
+                        break
+                elif ran == 2:
+                    if y > 0:
+                        if mapa[y - 1][0][x] == ' ' and mapa[y][0][x] == ' ':
+                            ships = [(y - 1, x), (y, x)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y - 1][0] = mapa[y - 1][0][:(x)] + '*' + mapa[y - 1][0][(x + 1):]
+                            a = 'Done'
+                            mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
                             break
-                    elif ran == 3:
-                        if y < 9:
-                            if mapa[y + 1][0][x] == ' ' and mapa[y][0][x] == ' ':
-                                mapa[y + 1][0] = mapa[y + 1][0][:(x)] + '*' + mapa[y + 1][0][(x + 1):]
-                                a = 'Done'
-                                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                                ships.append([(y + 1, x), (y, x)])
-                                #                                print('d', x, y)
-                                break
-                        else:
-                            #                            print('e')
+                    else:
+                        #                        print('e')
+                        break
+                elif ran == 3:
+                    if y < 9:
+                        if mapa[y + 1][0][x] == ' ' and mapa[y][0][x] == ' ':
+                            ships = [(y + 1, x), (y, x)]
+                            mapa = zanulka(mapa, ships)
+                            mapa[y + 1][0] = mapa[y + 1][0][:(x)] + '*' + mapa[y + 1][0][(x + 1):]
+                            a = 'Done'
+                            mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
                             break
-                    ran += 1
-                    times -= 1
-                    if ran == 4:
-                        ran = 0
-        for i in range(4):
-            a = 'nope'
-            while a != 'Done':
-                x = random.randrange(10)
-                y = random.randrange(10)
-                #                print(x, y)
-                if mapa[y][0][x] == ' ':
-                    a = 'Done'
-                    mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
-                    ships.append([y, x])
-                    #                    print('a', x, y)
-    print(mapa)
-    return field_to_str(mapa)
+                    else:
+                        #                        print('e')
+                        break
+                ran += 1
+                times -= 1
+                if ran == 4:
+                    ran = 0
+    for i in range(4):
+        a = 'nope'
+        while a != 'Done':
+            x = random.randrange(10)
+            y = random.randrange(10)
+            #            print(x, y)
+            if mapa[y][0][x] == ' ':
+                ships = [(y, x)]
+                mapa = zanulka(mapa, ships)
+                zanulka(mapa, ships)
+                a = 'Done'
+                mapa[y][0] = mapa[y][0][:x] + '*' + mapa[y][0][(x + 1):]
+    return mapa
 
-# def ss(mapa, (y, x)):
+
+def zanulka(mapa, points):
+    '''
+    Creates field around the ship
+    '''
+    for i in points:
+        if i[0] < 9 and i[1] < 9 and i[0] > 0 and i[1] > 0:
+            if mapa[i[0] + 1][0][i[1]] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1]] + '•' + mapa[i[0] + 1][0][i[1] + 1:]
+            if mapa[i[0] + 1][0][i[1] - 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] - 1] + '•' + mapa[i[0] + 1][0][i[1]:]
+            if mapa[i[0] + 1][0][i[1] + 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] + 1] + '•' + mapa[i[0] + 1][0][i[1] + 2:]
+            if mapa[i[0] - 1][0][i[1]] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1]] + '•' + mapa[i[0] - 1][0][i[1] + 1:]
+            if mapa[i[0] - 1][0][i[1] - 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] - 1] + '•' + mapa[i[0] - 1][0][i[1]:]
+            if mapa[i[0] - 1][0][i[1] + 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] + 1] + '•' + mapa[i[0] - 1][0][i[1] + 2:]
+            if mapa[i[0]][0][i[1] - 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] - 1] + '•' + mapa[i[0]][0][i[1]:]
+            if mapa[i[0]][0][i[1] + 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] + 1] + '•' + mapa[i[0]][0][i[1] + 2:]
+        elif i[0] == 0 and i[1] > 0 and i[1] < 9:
+            if mapa[i[0] + 1][0][i[1]] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1]] + '•' + mapa[i[0] + 1][0][i[1] + 1:]
+            if mapa[i[0] + 1][0][i[1] - 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] - 1] + '•' + mapa[i[0] + 1][0][i[1]:]
+            if mapa[i[0] + 1][0][i[1] + 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] + 1] + '•' + mapa[i[0] + 1][0][i[1] + 2:]
+            if mapa[i[0]][0][i[1] - 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] - 1] + '•' + mapa[i[0]][0][i[1]:]
+            if mapa[i[0]][0][i[1] + 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] + 1] + '•' + mapa[i[0]][0][i[1] + 2:]
+        elif i[0] == 9 and i[1] > 0 and i[1] < 9:
+            if mapa[i[0]][0][i[1] - 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] - 1] + '•' + mapa[i[0]][0][i[1]:]
+            if mapa[i[0]][0][i[1] + 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] + 1] + '•' + mapa[i[0]][0][i[1] + 2:]
+            if mapa[i[0] - 1][0][i[1]] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1]] + '•' + mapa[i[0] - 1][0][i[1] + 1:]
+            if mapa[i[0] - 1][0][i[1] - 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] - 1] + '•' + mapa[i[0] - 1][0][i[1]:]
+            if mapa[i[0] - 1][0][i[1] + 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] + 1] + '•' + mapa[i[0] - 1][0][i[1] + 2:]
+        elif i[0] > 0 and i[0] < 9 and i[1] == 0:
+            if mapa[i[0] + 1][0][i[1]] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1]] + '•' + mapa[i[0] + 1][0][i[1] + 1:]
+            if mapa[i[0] + 1][0][i[1] + 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] + 1] + '•' + mapa[i[0] + 1][0][i[1] + 2:]
+            if mapa[i[0] - 1][0][i[1]] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1]] + '•' + mapa[i[0] - 1][0][i[1] + 1:]
+            if mapa[i[0] - 1][0][i[1] + 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] + 1] + '•' + mapa[i[0] - 1][0][i[1] + 2:]
+            if mapa[i[0]][0][i[1] + 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] + 1] + '•' + mapa[i[0]][0][i[1] + 2:]
+        elif i[0] > 0 and i[0] < 9 and i[1] == 9:
+            if mapa[i[0] + 1][0][i[1]] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1]] + '•' + mapa[i[0] + 1][0][i[1] + 1:]
+            if mapa[i[0] + 1][0][i[1] - 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] - 1] + '•' + mapa[i[0] + 1][0][i[1]:]
+            if mapa[i[0] - 1][0][i[1]] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1]] + '•' + mapa[i[0] - 1][0][i[1] + 1:]
+            if mapa[i[0] - 1][0][i[1] - 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] - 1] + '•' + mapa[i[0] - 1][0][i[1]:]
+            if mapa[i[0]][0][i[1] - 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] - 1] + '•' + mapa[i[0]][0][i[1]:]
+        elif i[0] == 0 and i[1] == 0:
+            if mapa[i[0] + 1][0][i[1]] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1]] + '•' + mapa[i[0] + 1][0][i[1] + 1:]
+            if mapa[i[0] + 1][0][i[1] + 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] + 1] + '•' + mapa[i[0] + 1][0][i[1] + 2:]
+            if mapa[i[0]][0][i[1] + 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] + 1] + '•' + mapa[i[0]][0][i[1] + 2:]
+        elif i[0] == 0 and i[1] == 9:
+            if mapa[i[0] + 1][0][i[1]] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1]] + '•' + mapa[i[0] + 1][0][i[1] + 1:]
+            if mapa[i[0] + 1][0][i[1] - 1] == ' ':
+                mapa[i[0] + 1][0] = mapa[i[0] + 1][0][:i[1] - 1] + '•' + mapa[i[0] + 1][0][i[1]:]
+            if mapa[i[0]][0][i[1] - 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] - 1] + '•' + mapa[i[0]][0][i[1]:]
+        elif i[0] == 9 and i[1] == 0:
+            if mapa[i[0]][0][i[1] + 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] + 1] + '•' + mapa[i[0]][0][i[1] + 2:]
+            if mapa[i[0] - 1][0][i[1]] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1]] + '•' + mapa[i[0] - 1][0][i[1] + 1:]
+            if mapa[i[0] - 1][0][i[1] + 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] + 1] + '•' + mapa[i[0] - 1][0][i[1] + 2:]
+        elif i[0] == 9 and i[1] == 9:
+            if mapa[i[0]][0][i[1] - 1] == ' ':
+                mapa[i[0]][0] = mapa[i[0]][0][:i[1] - 1] + '•' + mapa[i[0]][0][i[1]:]
+            if mapa[i[0] - 1][0][i[1]] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1]] + '•' + mapa[i[0] - 1][0][i[1] + 1:]
+            if mapa[i[0] - 1][0][i[1] - 1] == ' ':
+                mapa[i[0] - 1][0] = mapa[i[0] - 1][0][:i[1] - 1] + '•' + mapa[i[0] - 1][0][i[1]:]
+    return mapa
